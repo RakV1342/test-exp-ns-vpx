@@ -32,12 +32,9 @@ To monitor stats and counters of these NetScaler instances, an exporter (172.17.
 
 Usage:
 ---
-The exporter can be run as a standalone python script, built into a container or run as a pod in Kubernetes. The corresponding drop-downs explain how to deploy it in each of the manners.
-
 <details>
 <summary>1. Exporter Inside K8s Cluster</summary>
 <br>
-
 
 An image for the exporter will need to be built and loaded to docker on all the nodes. The image can be built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```. Once loaded to docker on all the worker nodes, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service. 
 ```
@@ -71,8 +68,28 @@ spec:
     name: exp-port
   selector:
     app: exp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: rak-app
+  name: rak-app
+#  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: rakport
+#  jobLabel: app
+  selector:
+    matchLabels:
+      k8s-app: rak-app
+  namespaceSelector:
+    matchNames:
+    - monitoring
+    - default
 ```
-The parameters to provide in the ```args:``` section are:
+The parameters which can be provide in the ```args:``` section are:
 
 flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description
 -----------------|--------------------
@@ -81,8 +98,12 @@ flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
 --username       |Provide the username of the NetScaler to be monitored. Default: 'nsroot'
 --password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
 --secure         |Option 'yes' can be provided to run stat collection from NetScalers over TLS. Default: 'no'.
-</details>
 
+The pod can now be deployed using ```kubectl create -f exporter.yaml```. The serviceMonitor provided in the yaml file should allow for the Exporter to be auto-detected by the Prometheus Operator. 
+
+**NOTE:** The labels of svcmon, svc, and prometheus, and namespace restrictions should match. 
+
+</details>
 
 
 <details>
