@@ -36,7 +36,7 @@ Usage:
 <summary>1. Exporter Inside K8s Cluster</summary>
 <br>
    
-This method assumes Prometheus Operator has been configured in K8s for monitoring. Info to deploy is given here
+This method assumes Prometheus Operator has been configured in K8s for monitoring. The deployment guide for Prometheus Operator given here
 GIVE LINK
 AGAIN?? **NOTE:** The labels of svcmon, svc, and prometheus, and namespace restrictions should match. 
 
@@ -78,17 +78,17 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app: rak-app
-  name: rak-app
-#  namespace: monitoring
+    app: exp
+  name: exp
+  namespace: monitoring
 spec:
   endpoints:
   - interval: 30s
-    port: rakport
+    port: exp-port
 #  jobLabel: app
   selector:
     matchLabels:
-      k8s-app: rak-app
+      k8s-app: exp
   namespaceSelector:
     matchNames:
     - monitoring
