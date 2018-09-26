@@ -1,12 +1,24 @@
 # test-exp-ns-vpx
 
+Run a pod in cluster to monitor vpx/mpx -- use static promethues OR prometheus op
+
+Run exporter container (and prom and graf) outside to monitor vpx/mpx 
 
 
-Exporter for NetScaler Stats
+
+Exporter to Monitor Ingress VPX/MPX Devices
 ===
 
 Description:
 ---
+
+This guide describes how to setup an exporter to monitor Ingress VPX/MPX devices which are linked to a Kubernetes cluster. There are two ways to configure the monitoring system:
+
+Add list
+1. Run the exporter as a pod in kubernetes which is detected by prometheus operator
+2. Run the exporter outside the cluster as a container. (Requires configuration of prom and graf manually as containers)
+
+
 
 This is a simple server that scrapes Citrix NetScaler (NS) stats and exports them via HTTP to Prometheus. Prometheus can then be added as a data source to Grafana to view the netscaler stats graphically.
 
