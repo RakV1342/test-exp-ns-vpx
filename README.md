@@ -4,7 +4,7 @@ Run a pod in cluster to monitor vpx/mpx -- use static promethues OR prometheus o
 
 Run exporter container (and prom and graf) outside to monitor vpx/mpx 
 
-
+Name for exporter - Citrix Exporter??
 
 Exporter to Monitor Ingress VPX/MPX Devices
 ===
@@ -12,19 +12,17 @@ Exporter to Monitor Ingress VPX/MPX Devices
 Description:
 ---
 
-This guide describes how to setup an exporter to monitor Ingress VPX/MPX devices which are linked to a Kubernetes cluster. There are two ways to configure the monitoring system:
+This guide describes how to setup an Exporter to monitor Ingress VPX/MPX devices which are linked to a Kubernetes cluster. More details about the Exporter can be obtained from this [link](https://github.com/Rakshith1342/netscaler-stat-exporter).
 
-Add list
-1. Run the exporter as a pod in kubernetes which is detected by prometheus operator
-2. Run the exporter outside the cluster as a container. (Requires configuration of prom and graf manually as containers)
+There are two ways to configure the monitoring system:
+1. Exporter inside k8s cluster as a pod detected by Prometheus Operator
+2. Exporter outside k8s cluster as a container detected by a Prometheus container
 
-
-
-This is a simple server that scrapes Citrix NetScaler (NS) stats and exports them via HTTP to Prometheus. Prometheus can then be added as a data source to Grafana to view the netscaler stats graphically.
+The following diagram shows the two approaches with a diagram. 
 
 ![exporter_diagram](https://user-images.githubusercontent.com/40210995/41391720-f89ee57e-6fb9-11e8-9550-02dc60dcfa43.png)
 
-   In the above diagram, blue boxes represent physical machines or VMs and grey boxes represent containers. 
+   In the above diagram, ................... blue boxes represent physical machines or VMs and grey boxes represent containers. 
 There are two physical/virual NetScaler instances present with IPs 10.0.0.1 and 10.0.0.2 and a NetScaler CPX (containerized NetScaler) with an IP 172.17.0.2.
 To monitor stats and counters of these NetScaler instances, an exporter (172.17.0.3) is being run as a container. It collects NetScaler stats such as total hits to a vserver, http request rate, ssl encryption-decryption rate, etc from the three NetScaler instances and holds them until the Prometheus containter 172.17.0.4 pulls the stats for storage as a time series. Grafana can then be pointed to the Prometheus container to fetch the stats, plot them, set alarms, create heat maps, generate tables, etc as needed to analyse the NetScaler stats. 
 
@@ -35,7 +33,7 @@ Usage:
 The exporter can be run as a standalone python script, built into a container or run as a pod in Kubernetes. The corresponding drop-downs explain how to deploy it in each of the manners.
 
 <details>
-<summary>Usage as a Python Script</summary>
+<summary>1. Exporter Inside K8s Cluster</summary>
 <br>
 
 To use the exporter as a python script, the ```prometheus_client``` and ```requests``` package needs to be installed. This can be done using 
@@ -69,7 +67,7 @@ The user can then access the exported metrics directly thorugh port 8888 on the 
 
 
 <details>
-<summary>Usage as a Container</summary>
+<summary>2. Exporter Outside K8s Cluster</summary>
 <br>
 
 In order to use the exporter as a container, it needs to be built into a container. This can be done as follows; 
