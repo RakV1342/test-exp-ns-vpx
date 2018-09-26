@@ -6,6 +6,8 @@ Run exporter container (and prom and graf) outside to monitor vpx/mpx
 
 Name for exporter - Citrix Exporter??
 
+Change label such that it works with prometheus out of the box -- so label should be k8s-app
+
 Exporter to Monitor Ingress VPX/MPX Devices
 ===
 
@@ -36,16 +38,41 @@ The exporter can be run as a standalone python script, built into a container or
 <summary>1. Exporter Inside K8s Cluster</summary>
 <br>
 
-To use the exporter as a python script, the ```prometheus_client``` and ```requests``` package needs to be installed. This can be done using 
+
+An image for the exporter will need to be built and loaded to docker on all the nodes. The image can be built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```. Once loaded to docker on all the worker nodes, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service. 
 ```
-pip install prometheus_client
-pip install requests
+apiVersion: v1
+kind: Pod
+metadata:
+  name: exp
+  labels:
+    app: exp
+spec:
+  containers:
+    - name: exp
+      image: ns-exporter:v1
+      args:
+        - "--target-nsip=x.x.x.x:xx"
+        - "--target-nsip=y.y.y.y:yy"
+        - "--port=8080"
+      imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exp
+  labels:
+    app: exp
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: exp-port
+  selector:
+    app: exp
 ```
-Now, the following command can be used to run the exporter as a python script;
-```
-nohup python exporter.py [flags] &
-```
-where the flags are:
+The parameters to provide in the ```args:``` section are:
 
 flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description
 -----------------|--------------------
@@ -54,14 +81,6 @@ flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
 --username       |Provide the username of the NetScaler to be monitored. Default: 'nsroot'
 --password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
 --secure         |Option 'yes' can be provided to run stat collection from NetScalers over TLS. Default: 'no'.
--h               |Provides helper docs related to the exporter
-
-The exporter can be setup as given in the diagram using;
-```
-nohup python exporter.py --target-nsip=10.0.0.1:80 --target-nsip=10.0.0.2:80 --target-nsip=172.17.0.2:80 --port 8080 &
-```
-This directs the exporter container to scrape the 10.0.0.1, 10.0.0.2, and 172.17.0.2, IPs on port 80, and the expose the stats it collects on port 8080. 
-The user can then access the exported metrics directly thorugh port 8888 on the machine where the exporter is running, or Prometheus and Grafana can be setup to view the exported metrics though their GUI.
 </details>
 
 
