@@ -35,6 +35,11 @@ Usage:
 <details>
 <summary>1. Exporter Inside K8s Cluster</summary>
 <br>
+   
+This method assumes Prometheus Operator has been configured in K8s for monitoring. Info to deploy is given here
+GIVE LINK
+AGAIN?? **NOTE:** The labels of svcmon, svc, and prometheus, and namespace restrictions should match. 
+
 
 An image for the exporter will need to be built and loaded to docker on all the nodes. The image can be built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```. Once loaded to docker on all the worker nodes, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service. 
 ```
@@ -103,6 +108,7 @@ The pod can now be deployed using ```kubectl create -f exporter.yaml```. The ser
 
 **NOTE:** The labels of svcmon, svc, and prometheus, and namespace restrictions should match. 
 
+Validate that the Exporter appears in the targets list in UP state.
 </details>
 
 
