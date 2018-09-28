@@ -107,6 +107,7 @@ Validation:
 <summary>1. Exporter Inside K8s Cluster</summary>
 <br>
    
+Re-apply the service yaml files for NodePort and validate using corsp port.
 Validate that the Exporter appears in the targets list in UP state.
 Now can qury for metrics in Grafana and get create graphs.
 </details>
