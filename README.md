@@ -76,7 +76,7 @@ spec:
     - monitoring
     - default
 ```
-The parameters which can be provide in the ```args:``` section are:
+Additional parameters such as username, password, and TLS query can be enabled by providing additional flags in the ```args:``` section. The table below describes flags which can be provided:
 
 flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description
 -----------------|--------------------
@@ -86,7 +86,6 @@ flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
 --password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
 --secure         |Option 'yes' can be provided to run stat collection from NetScalers over TLS. Default: 'no'.
 
-The pod can now be deployed using ```kubectl create -f exporter.yaml```. The serviceMonitor provided in the yaml file should allow for the Exporter to be auto-detected by the Prometheus Operator. 
 
 **NOTE:** The labels of svcmon, svc, and prometheus, and namespace restrictions should match. 
 
@@ -99,6 +98,25 @@ Validate that the Exporter appears in the targets list in UP state.
 <br>
 
 This [link](https://github.com/Rakshith1342/netscaler-stat-exporter) explains how the Exporter can be setup to monitor any given NetScaler device in a non-Kubernetes environment. By following that documentation and providing the IPs of the Ingress VPX/MPX machines, they can be monitored.
+</details>
+
+
+Validation:
+---
+<details>
+<summary>1. Exporter Inside K8s Cluster</summary>
+<br>
+   
+Validate that the Exporter appears in the targets list in UP state.
+Now can qury for metrics in Grafana and get create graphs.
+</details>
+
+
+<details>
+<summary>2. Exporter Outside K8s Cluster</summary>
+<br>
+
+The [verification section](https://github.com/Rakshith1342/netscaler-stat-exporter#verification-of-exporter-functionality) on the [Exporter](https://github.com/Rakshith1342/netscaler-stat-exporter) page explains how this setup which is running outside a Kubernetes cluster can be validated.
 </details>
 
 
