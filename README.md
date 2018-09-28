@@ -23,7 +23,7 @@ Running ```kubectl create -f prometheus-operator/contrib/kube-prometheus/manifes
 
 Once Prometheus Operator has been setup, an image for the exporter will need to be built and loaded to docker on all the nodes. The image can be built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```. 
 
-The following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service. Populate the ```args:``` section to include the IPs of the Ingress VPX/MPX to be monitored and deploy the exporter using```kubectl create -f exporter_ingress.yaml```. 
+Now, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service. Populate the ```args:``` section to include the IPs of the Ingress VPX/MPX to be monitored and deploy the exporter using ```kubectl create -f exporter_ingress.yaml```. 
 ```
 apiVersion: v1
 kind: Pod
