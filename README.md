@@ -116,5 +116,5 @@ Validate that the Exporter appears in the targets list in UP state.
 <summary>2. Exporter Outside K8s Cluster</summary>
 <br>
 
-To be filled in.
+This [link](https://github.com/Rakshith1342/netscaler-stat-exporter) explains how the Exporter can be setup to monitor any given NetScaler device in a non-Kubernetes environment. By following that documentation and providing the IPs of the Ingress VPX/MPX machines, they can be monitored.
 </details>
