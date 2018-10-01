@@ -40,6 +40,11 @@ spec:
         - "--target-nsip=y.y.y.y:yy"
         - "--port=8080"
       imagePullPolicy: IfNotPresent
+      env:
+       - name: POD_IP
+         valueFrom:
+           fieldRef:
+             fieldPath: status.podIP
 ---
 apiVersion: v1
 kind: Service
@@ -67,10 +72,9 @@ spec:
   endpoints:
   - interval: 30s
     port: exp-port
-#  jobLabel: app
   selector:
     matchLabels:
-      k8s-app: exp
+      app: exp
   namespaceSelector:
     matchNames:
     - monitoring
