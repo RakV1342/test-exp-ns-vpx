@@ -41,10 +41,10 @@ spec:
         - "--port=8080"
       imagePullPolicy: IfNotPresent
       env:
-       - name: POD_IP
-         valueFrom:
-           fieldRef:
-             fieldPath: status.podIP
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
 ---
 apiVersion: v1
 kind: Service
@@ -90,10 +90,6 @@ flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
 --password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
 --secure         |Option 'yes' can be provided to run stat collection from NetScalers over TLS. Default: 'no'.
 
-
-**NOTE:** The labels of svcmon, svc, and prometheus, and namespace restrictions should match. 
-
-Validate that the Exporter appears in the targets list in UP state.
 </details>
 
 
@@ -110,10 +106,63 @@ Validation:
 <details>
 <summary>1. Exporter Inside K8s Cluster</summary>
 <br>
-   
-Re-apply the service yaml files for NodePort and validate using corsp port.
-Validate that the Exporter appears in the targets list in UP state.
-Now can qury for metrics in Grafana and get create graphs.
+
+To validate the proper working of the Exporter to monitor the Ingress devices, the Prometheus and Grafana pods need to be accessible from a browser. This can be done by exposing the Prometheus and Grafana services as NodePorts. The ```prometheus-service.yaml``` can be changed as follows to expose them using NodePort.
+```
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    prometheus: k8s
+  name: prometheus-k8s
+  namespace: monitoring
+spec:
+  type: NodePort
+  ports:
+  - name: web
+    port: 9090
+    nodePort: 30100
+    targetPort: web
+  selector:
+    app: prometheus
+    prometheus: k8s
+```
+
+After making these changes to the yaml files, the following commands will expose the services:
+```
+kubectl apply -f prometheus-service.yaml
+kubectl apply -f grafana-service.yaml
+```
+
+Now, going to the targets page ```http://<k8s-node-IP>:30100/targets``` of Prometheus can be used to verify if the state of the Exporter in the list is ```UP```. 
+
+[IMAGE OF TARGETS PAGE]
+
+**NOTE:** If large metrics... may not get response in reqd time. If the endpoint appear in the list of targets but are in DOWN with the error "context deadline exceeded", then increase the ```scrape_timing``` AND ```timeout``` of the prometheus-operator till UP state.
+
+Finally, Grafana can be used to plot stats. 
+EXPOSE GRAFANA AS NODE PORT
+The ```grafana-service.yaml``` can be changed as follows to expose them using NodePort.
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 3000
+    nodePort: 30300
+    targetPort: http
+  selector:
+    app: grafana
+```
+OPEN IN BROWSER WITH ADMIN/ADMIN
+PLOT SOME NETSCALER COUNTER --- TYPE NETSCALER IN QUERY BAR, OR JUST IMPORT THE JSON FILE.
+[IMAGE OF SOME STAT PAGE]
+
 </details>
 
 
