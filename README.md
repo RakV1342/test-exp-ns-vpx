@@ -131,7 +131,6 @@ spec:
 After making these changes to the yaml files, the following commands will expose the services:
 ```
 kubectl apply -f prometheus-service.yaml
-kubectl apply -f grafana-service.yaml
 ```
 
 Now, going to the targets page ```http://<k8s-node-IP>:30100/targets``` of Prometheus can be used to verify if the state of the Exporter in the list is ```UP```. 
@@ -158,6 +157,9 @@ spec:
     targetPort: http
   selector:
     app: grafana
+```
+```
+kubectl apply -f grafana-service.yaml
 ```
 OPEN IN BROWSER WITH ADMIN/ADMIN
 PLOT SOME NETSCALER COUNTER --- TYPE NETSCALER IN QUERY BAR, OR JUST IMPORT THE JSON FILE.
